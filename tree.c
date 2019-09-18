@@ -2,6 +2,7 @@
 // Created by renorram on 17/09/2019.
 //
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "tree.h"
 
@@ -24,11 +25,16 @@ Tree *tree_create() {
     return t;
 }
 
+void tree_free_node(No *node) {
+    free(node->info);
+    free(node);
+}
+
 void tree_destroy_recursive(No *root) {
     if (root != NULL) {
         tree_destroy_recursive(root->right);
         tree_destroy_recursive(root->left);
-        free(root);
+        tree_free_node(root);
     }
 }
 
@@ -66,4 +72,79 @@ void tree_insert(Tree *t, const char *word) {
             father->left = root;
         }
     }
+}
+
+No *tree_remove_biggest(No *root, char **biggest) {
+    if (root != NULL) {
+        if (root->right != NULL) {
+            root->right = tree_remove_biggest(root->right, biggest);
+        } else {
+            *(biggest) = root->info;
+            No *aux = root;
+            root = root->left;
+            // não utilizei tree_free_node pois ainda vou precisar da string em root->info
+            free(aux);
+        }
+    }
+
+    return root;
+}
+
+No *tree_remove_recursive(No *root, const char *word) {
+    if (root != NULL) {
+        if (strcmp(root->info, word) > 0) {
+            root->right = tree_remove_recursive(root->right, word);
+        } else {
+            if (strcmp(root->info, word) < 0) {
+                root->left = tree_remove_recursive(root->left, word);
+            } else { // ENCONTROU
+                No *aux = root;
+                // Folha - Grau (0)
+                if (root->left == NULL && root->right == NULL) {
+                    root = NULL;
+                    tree_free_node(aux);
+                } else {
+
+                    // Grau (1)
+                    if (root->left == NULL || root->right == NULL) {
+                        root = root->left != NULL ? root->left : root->right;
+                        tree_free_node(aux);
+                    } else { // GRAU 2
+                        char *biggest;
+                        root->left = tree_remove_biggest(root->left, &biggest);
+                        // remove da memoria string antiga
+                        free(root->info);
+                        root->info = biggest;
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    return root;
+}
+
+void tree_remove(Tree *t, const char *word) {
+    t->root = tree_remove_recursive(t->root, word);
+}
+
+void tree_remove_by_substring(Tree * t, const char * substring)
+{
+
+}
+
+void tree_print_recursive(No *root) {
+    if (root != NULL) {
+        tree_print_recursive(root->right);
+        printf("\t%s\n", root->info);
+        tree_print_recursive(root->left);
+    }
+}
+
+void tree_print(Tree *t) {
+    printf("******\tImprimindo\t******\n");
+    tree_print_recursive(t->root);
+    printf("**************************\n");
 }
