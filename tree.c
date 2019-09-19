@@ -130,9 +130,22 @@ void tree_remove(Tree *t, const char *word) {
     t->root = tree_remove_recursive(t->root, word);
 }
 
+No * tree_remove_by_substring_recursive(No * root, const char * substring)
+{
+    if (root != NULL) {
+        root->left = tree_remove_by_substring_recursive(root->left, substring);
+        root->right = tree_remove_by_substring_recursive(root->right, substring);
+        if (strstr(root->info, substring) != NULL) {
+            root = tree_remove_recursive(root, root->info);
+        }
+    }
+
+    return root;
+}
+
 void tree_remove_by_substring(Tree * t, const char * substring)
 {
-
+    t->root = tree_remove_by_substring_recursive(t->root, substring);
 }
 
 void tree_print_recursive(No *root) {
