@@ -24,7 +24,7 @@ int main(void) {
     tree_insert(t, "charlos");
     tree_print(t);
 
-    tree_remove_by_substring(t, "arl");
+    tree_print_by_substring(t, "arl");
     tree_print(t);
 
 //    tree_remove(t, "joão");
