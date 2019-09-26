@@ -146,6 +146,31 @@ void tree_print_by_substring(Tree * t, const char * substring)
     tree_print_by_substring_recursive(t->root, substring);
 }
 
+void tree_remove_bigger_substring(Tree * t, const char * substring)
+{
+    if (t->root == NULL){
+        return;
+    }
+
+    No * root = t->root, * aux = NULL;
+    while (strcmp(root->info, substring) > 0) {
+        aux = root;
+        root = root->right;
+    }
+
+    if (aux == NULL) {
+        t->root = root->left;
+        root->left = NULL;
+        tree_destroy_recursive(root);
+    } else {
+        tree_destroy_recursive(root->right);
+        root->right = NULL;
+    }
+
+}
+
+void tree_remove_smaller_substring(Tree * t, const char * substring);
+
 void tree_print_recursive(No *root) {
     if (root != NULL) {
         tree_print_recursive(root->right);
