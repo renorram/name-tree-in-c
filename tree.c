@@ -54,7 +54,7 @@ void tree_insert(Tree *t, const char *word) {
         }
 
         father = root;
-        root = cmp_holder > 0 ? root->right : root->left;
+        root = cmp_holder > 0 ? root->left : root->right;
     }
 
     root = malloc(sizeof(No));
@@ -67,9 +67,9 @@ void tree_insert(Tree *t, const char *word) {
         t->root = root;
     } else {
         if (strcmp(father->info, word) > 0) {
-            father->right = root;
-        } else {
             father->left = root;
+        } else {
+            father->right = root;
         }
     }
 }
@@ -93,10 +93,10 @@ No *tree_remove_biggest(No *root, char **biggest) {
 No *tree_remove_recursive(No *root, const char *word) {
     if (root != NULL) {
         if (strcmp(root->info, word) > 0) {
-            root->right = tree_remove_recursive(root->right, word);
+            root->left = tree_remove_recursive(root->left, word);
         } else {
             if (strcmp(root->info, word) < 0) {
-                root->left = tree_remove_recursive(root->left, word);
+                root->right = tree_remove_recursive(root->right, word);
             } else { // ENCONTROU
                 No *aux = root;
                 // Folha - Grau (0)
@@ -130,8 +130,7 @@ void tree_remove(Tree *t, const char *word) {
     t->root = tree_remove_recursive(t->root, word);
 }
 
-void  tree_print_by_substring_recursive(No * root, const char * substring)
-{
+void tree_print_by_substring_recursive(No *root, const char *substring) {
     if (root != NULL) {
         tree_print_by_substring_recursive(root->left, substring);
         tree_print_by_substring_recursive(root->right, substring);
@@ -141,41 +140,59 @@ void  tree_print_by_substring_recursive(No * root, const char * substring)
     }
 }
 
-void tree_print_by_substring(Tree * t, const char * substring)
-{
+void tree_print_by_substring(Tree *t, const char *substring) {
     tree_print_by_substring_recursive(t->root, substring);
 }
 
-void tree_remove_bigger_substring(Tree * t, const char * substring)
-{
-    if (t->root == NULL){
-        return;
+No *tree_remove_bigger_substring_recursive(No *root, const char *substring) {
+    if (root != NULL) {
+        int cmp_holder = strcmp(root->info, substring);
+        if (cmp_holder == 0) {
+            tree_destroy_recursive(root->right);
+            root->right = NULL;
+        } else if (cmp_holder > 0) {
+            No *aux = root->left;
+            tree_destroy_recursive(root->right);
+            root = tree_remove_bigger_substring_recursive(aux, substring);
+        } else {
+            root->right = tree_remove_bigger_substring_recursive(root->right, substring);
+        }
     }
 
-    No * root = t->root, * aux = NULL;
-    while (strcmp(root->info, substring) > 0) {
-        aux = root;
-        root = root->right;
-    }
-
-    if (aux == NULL) {
-        t->root = root->left;
-        root->left = NULL;
-        tree_destroy_recursive(root);
-    } else {
-        tree_destroy_recursive(root->right);
-        root->right = NULL;
-    }
-
+    return root;
 }
 
-void tree_remove_smaller_substring(Tree * t, const char * substring);
+void tree_remove_bigger_substring(Tree *t, const char *substring) {
+    t->root = tree_remove_bigger_substring_recursive(t->root, substring);
+}
+
+No *tree_remove_smaller_substring_recursive(No *root, const char *substring) {
+    if (root != NULL) {
+        int cmp_holder = strcmp(root->info, substring);
+        if (cmp_holder == 0) {
+            tree_destroy_recursive(root->left);
+            root->left = NULL;
+        } else if (cmp_holder < 0) {
+            No *aux = root->right;
+            tree_destroy_recursive(root->left);
+            root = tree_remove_smaller_substring_recursive(aux, substring);
+        } else {
+            root->left = tree_remove_smaller_substring_recursive(root->left, substring);
+        }
+    }
+
+    return root;
+}
+
+void tree_remove_smaller_substring(Tree *t, const char *substring) {
+    t->root = tree_remove_smaller_substring_recursive(t->root, substring);
+}
 
 void tree_print_recursive(No *root) {
     if (root != NULL) {
-        tree_print_recursive(root->right);
-        printf("\t%s\n", root->info);
         tree_print_recursive(root->left);
+        printf("\t%s\n", root->info);
+        tree_print_recursive(root->right);
     }
 }
 
