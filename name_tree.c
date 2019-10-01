@@ -32,4 +32,22 @@ void name_tree_save_to_file(const char *file_path, Tree *tree) {
     }
 
     char **strings = tree_as_string_vector(tree);
+    int str_counter = 0;
+    char * aux = malloc(sizeof(char) * strlen(*(strings + str_counter)) + 1);
+    strcpy(aux, *(strings + str_counter));
+    strcat(aux, "\n");
+
+    fwrite(aux, sizeof(char), strlen(aux), file);
+    str_counter++;
+
+    file = freopen(file_path, "a", file);
+
+    for (;*(strings + str_counter);str_counter++) {
+        aux = realloc(aux, sizeof(char) * strlen(*(strings + str_counter)) + 1);
+        strcpy(aux, *(strings + str_counter));
+        strcat(aux, "\n");
+        fwrite(aux, sizeof(char), strlen(aux), file);
+    }
+
+    fclose(file);
 }

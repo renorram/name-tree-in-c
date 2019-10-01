@@ -6,6 +6,8 @@
 #include <string.h>
 #include "tree.h"
 
+#define NAME_MAX_SIZE 31
+
 typedef struct no No;
 
 struct tree {
@@ -249,7 +251,7 @@ void tree_as_string_vector_recursive(No *root, char **string_vector, int *counte
 
 char **tree_as_string_vector(Tree *t) {
     int node_count = tree_count_nodes(t);
-    char **strings = malloc(sizeof(char *) * node_count);
+    char **strings = malloc(sizeof(char *) * node_count * NAME_MAX_SIZE);
     int  i = 0;
     tree_as_string_vector_recursive(t->root, strings, &i);
 
