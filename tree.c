@@ -27,6 +27,19 @@ Tree *tree_create() {
     return t;
 }
 
+void tree_strcpy(char *dest, const char *source) {
+    int i, x;
+    char c;
+
+    for (i = 0, x = 0; (c = *(source + i)); i++) {
+        if (c != '\n') {
+            dest[x] = c;
+            x++;
+        }
+    }
+    dest[x] = '\0';
+}
+
 void tree_free_node(No *node) {
     free(node->info);
     free(node);
@@ -48,19 +61,6 @@ void tree_destroy(Tree *t) {
 void tree_clean(Tree *t) {
     tree_destroy_recursive(t->root);
     t->root = NULL;
-}
-
-void tree_strcpy(char *dest, const char *source) {
-    int i, x;
-    char c;
-
-    for (i = 0, x = 0; (c = *(source + i)); i++) {
-        if (c != '\n') {
-            dest[x] = c;
-            x++;
-        }
-    }
-    dest[x] = '\0';
 }
 
 void tree_insert(Tree *t, const char *word) {
@@ -147,7 +147,10 @@ No *tree_remove_recursive(No *root, const char *word) {
 }
 
 void tree_remove(Tree *t, const char *word) {
-    t->root = tree_remove_recursive(t->root, word);
+    char * nword = malloc(sizeof(char) * strlen(word));
+    tree_strcpy(nword, word);
+    t->root = tree_remove_recursive(t->root, nword);
+    free(nword);
 }
 
 void tree_print_by_substring_recursive(No *root, const char *substring) {
@@ -161,7 +164,10 @@ void tree_print_by_substring_recursive(No *root, const char *substring) {
 }
 
 void tree_print_by_substring(Tree *t, const char *substring) {
-    tree_print_by_substring_recursive(t->root, substring);
+    char * nword = malloc(sizeof(char) * strlen(substring));
+    tree_strcpy(nword, substring);
+    tree_print_by_substring_recursive(t->root, nword);
+    free(nword);
 }
 
 No *tree_remove_bigger_substring_recursive(No *root, const char *substring) {
@@ -183,7 +189,10 @@ No *tree_remove_bigger_substring_recursive(No *root, const char *substring) {
 }
 
 void tree_remove_bigger_substring(Tree *t, const char *substring) {
-    t->root = tree_remove_bigger_substring_recursive(t->root, substring);
+    char * nword = malloc(sizeof(char) * strlen(substring));
+    tree_strcpy(nword, substring);
+    t->root = tree_remove_bigger_substring_recursive(t->root, nword);
+    free(nword);
 }
 
 No *tree_remove_smaller_substring_recursive(No *root, const char *substring) {
@@ -205,7 +214,10 @@ No *tree_remove_smaller_substring_recursive(No *root, const char *substring) {
 }
 
 void tree_remove_smaller_substring(Tree *t, const char *substring) {
-    t->root = tree_remove_smaller_substring_recursive(t->root, substring);
+    char * nword = malloc(sizeof(char) * strlen(substring));
+    tree_strcpy(nword, substring);
+    t->root = tree_remove_smaller_substring_recursive(t->root, nword);
+    free(nword);
 }
 
 void tree_print_recursive(No *root) {

@@ -17,5 +17,6 @@ void tree_remove_bigger_substring(Tree * t, const char * substring);
 void tree_remove_smaller_substring(Tree * t, const char * substring);
 void tree_print(Tree * t);
 char ** tree_as_string_vector(Tree *t);
+int tree_count_nodes(Tree *t);
 
 #endif //NAMELIST_TREE_H
