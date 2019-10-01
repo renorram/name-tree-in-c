@@ -1,8 +1,8 @@
 TARGET = main
 CC=gcc
 CFLAGS =-I. -Wall -Wextra -Werror
-HEADERS = tree.h
-OBJ = main.o
+HEADERS = name_tree.h tree.h reader.h
+OBJ = main.o tree.o reader.o name_tree.o
 
 .PHONY: clean
 

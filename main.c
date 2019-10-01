@@ -6,10 +6,14 @@
 #include <stdlib.h>
 #include "tree.h"
 #include "reader.h"
+#include "name_tree.h"
 
 int main(void) {
-    reader_get_file_lines("/home/renorram/Documentos/tramped2/resources/names.txt");
-//    Tree * t = tree_create();
+    const char * file_path = "/home/renorram/Documentos/tramped2/resources/names.txt";
+    Tree * t = tree_create();
+
+    name_tree_load_from_file(file_path, t);
+    tree_as_string_vector(t);
 //    tree_insert(t, "beto");
 //    tree_insert(t, "ana");
 //    tree_insert(t, "joão");

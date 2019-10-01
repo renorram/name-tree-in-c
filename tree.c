@@ -43,6 +43,24 @@ void tree_destroy(Tree *t) {
     free(t);
 }
 
+void tree_clean(Tree *t) {
+    tree_destroy_recursive(t->root);
+    t->root = NULL;
+}
+
+void tree_strcpy(char *dest, const char *source) {
+    int i, x;
+    char c;
+
+    for (i = 0, x = 0; (c = *(source + i)); i++) {
+        if (c != '\n') {
+            dest[x] = c;
+            x++;
+        }
+    }
+    dest[x] = '\0';
+}
+
 void tree_insert(Tree *t, const char *word) {
     No *root = t->root, *father = NULL;
     int cmp_holder;
@@ -59,7 +77,7 @@ void tree_insert(Tree *t, const char *word) {
 
     root = malloc(sizeof(No));
     root->info = malloc(sizeof(word) * strlen(word));
-    strcpy(root->info, word);
+    tree_strcpy(root->info, word);
     root->left = NULL;
     root->right = NULL;
 
@@ -200,4 +218,40 @@ void tree_print(Tree *t) {
     printf("******\tImprimindo\t******\n");
     tree_print_recursive(t->root);
     printf("**************************\n");
+}
+
+int tree_count_nodes_recursive(No *root) {
+    if (root != NULL) {
+        int right = tree_count_nodes_recursive(root->right);
+        int left = tree_count_nodes_recursive(root->left);
+
+        return right + left + 1;
+    }
+
+    return 0;
+}
+
+int tree_count_nodes(Tree *t) {
+    return tree_count_nodes_recursive(t->root);
+}
+
+void tree_as_string_vector_recursive(No *root, char **string_vector, int *counter) {
+    if (root != NULL) {
+        tree_as_string_vector_recursive(root->left, string_vector, counter);
+
+        *(string_vector + *(counter)) = malloc(sizeof(char) * strlen(root->info));
+        strcpy(*(string_vector + *(counter)), root->info);
+        *counter = *(counter) + 1;
+
+        tree_as_string_vector_recursive(root->right, string_vector, counter);
+    }
+}
+
+char **tree_as_string_vector(Tree *t) {
+    int node_count = tree_count_nodes(t);
+    char **strings = malloc(sizeof(char *) * node_count);
+    int  i = 0;
+    tree_as_string_vector_recursive(t->root, strings, &i);
+
+    return strings;
 }
