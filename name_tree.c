@@ -16,6 +16,12 @@ void name_tree_load_from_file(const char *file_path, Tree *tree) {
     int i;
     char *string;
 
+    if (lines == NULL) {
+        free(lines);
+        perror("None lines were read, file is empty.");
+        exit(1);
+    }
+
     for (i = 0; (string = *(lines + i)); i++) {
         tree_insert(tree, string);
     }

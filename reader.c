@@ -44,12 +44,14 @@ char **reader_get_file_lines(const char *file_path) {
     }
 
     int counter = 0, line_number = reader_count_lines(file);
+    // @todo work on unintialized warning
+    // @see https://stackoverflow.com/questions/27594992/uninitialized-value-was-created-by-a-heap-allocation
     char **lines = malloc(sizeof(char *) * line_number * READER_LINE_MAX);
     char *buffer = malloc(sizeof(char) * READER_LINE_MAX);
 
     while (fgets(buffer, READER_LINE_MAX, file) != NULL) {
         reader_str_tolower(buffer);
-        *(lines + counter) = malloc(sizeof(char) * strlen(buffer));
+        *(lines + counter) = malloc(sizeof(char) * strlen(buffer) + 1);
         strcpy(*(lines + counter), buffer);
         counter++;
     }

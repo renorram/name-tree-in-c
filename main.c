@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "tree.h"
 #include "name_tree.h"
+#include "utils.h"
 
 void show_menu() {
     system("clear");
@@ -26,8 +27,9 @@ void wait_for_keypressed()
 }
 
 int main(void) {
-    const char *file_to_read = "/mnt/c/Users/1611331/Documents/tramped2/resources/names.txt";
-    const char *file_to_save = "/mnt/c/Users/1611331/Documents/tramped2/resources/names2.txt";
+//    const char *file_to_read = "/home/renorram/Documents/tramped2/resources/names.txt";
+    const char *file_to_read = get_file_path_on_curr_dir("../resources/names.txt");
+    const char *file_to_save = get_file_path_on_curr_dir("../resources/names2.txt");
 
 
     Tree *t = tree_create();
@@ -89,6 +91,8 @@ int main(void) {
                 break;
             case '9':
                 tree_destroy(t);
+                free((char *)file_to_read);
+                free((char *)file_to_save);
                 exit(0);
             default:
                 break;
