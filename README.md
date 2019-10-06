@@ -4,7 +4,7 @@ This project was made for the Data Structures class on my CS graduation.
 
 The goal is to implement a binary search tree able to read names from a file and assemble a proper binary tree.
 
-There is also besides the regular tree operations there is also:
+Besides the regular tree operations there is also:
 - search by substring
 - remove strings smaller than specified string
 - remove strings bigger than specified string
