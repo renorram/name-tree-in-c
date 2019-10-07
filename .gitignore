@@ -1,3 +1,5 @@
 cmake-build-debug
 .idea
 resources/names2.txt
+*.o
+main
